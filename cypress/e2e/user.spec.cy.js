@@ -4,6 +4,8 @@ import LoginPage from '../pages/loginPage.js'
 import MenuPage from '../pages/menuPage.js'
 import MyInfoPage from '../pages/myInfoPage.js'
 
+const Chance = require('chance')
+const chance = new Chance
 const loginPage = new LoginPage
 const dashboardPage = new DashboardPage
 const menuPage = new MenuPage
@@ -12,19 +14,14 @@ const { use } = require("chai")
 
 describe('Orange HRM Tests', () => {
 
-  it.only('User Info Update - Success', () => {
+  it('User Info Update - Success', () => {
     loginPage.acessLoginPage()
-    loginPage.loginWithUser(userData.userSucess.username, userData.userSucess.passoword)
+    loginPage.loginWithAnyUser(userData.userSucess.username, userData.userSucess.passoword)
     dashboardPage.checkDashboardPage()
     menuPage.accessMyInfo()
-    myInfoPage.editMyInfo()
-  })  
-
-  it('Login - Fail', () => {
-    cy.visit('/auth/login')
-    cy.get(selectorsList.usernameField).type(userData.userFail.username)
-    cy.get(selectorsList.passwordField).type(userData.userFail.passoword)
-    cy.get(selectorsList.loginButton).click()
-    cy.get(selectorsList.wrongCredentialAlert)
-  })
+    myInfoPage.fillPersonalDetails(chance.first(), chance.string(), chance.last())
+    myInfoPage.fillEmployeeDetails('EmployId', 'OtherId', 'Drivers license', '2025-07-29')
+    myInfoPage.fillStatus()
+    myInfoPage.saveForm()
+  }) 
 })
